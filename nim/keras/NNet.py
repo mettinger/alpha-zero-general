@@ -7,6 +7,7 @@ import numpy as np
 import math
 import sys
 import datetime
+from keras.callbacks import TensorBoard
 sys.path.append('..')
 from utils import *
 from NeuralNet import NeuralNet
@@ -38,14 +39,14 @@ class NNetWrapper(NeuralNet):
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
 
-        log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+        #log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tensorboard = TensorBoard(log_dir="logs")
 
         self.nnet.model.fit(x = input_boards, 
                             y = [target_pis, target_vs], 
                             batch_size = args.batch_size, 
                             epochs = args.epochs,  
-                            callbacks=[tensorboard_callback])
+                            callbacks=[tensorboard])
 
     def predict(self, board):
         """
