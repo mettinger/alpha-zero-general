@@ -60,6 +60,8 @@ if gameChoice == 0:
         n1.load_checkpoint('./pretrained_models/othello/pytorch/','8x8_100checkpoints_best.pth.tar')
 elif gameChoice == 1:
     n1.load_checkpoint('/Users/mettinger/github/alpha-zero-general/pretrained_models/tictactoe/keras','best-25eps-25sim-10epch.pth.tar')
+elif gameChoice == 2:
+    n1.load_checkpoint('''/Users/mettinger/Google Drive/models''', 'best.pth.tar')
 
 args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0})
 mcts1 = MCTS(g, n1, args1)
@@ -73,6 +75,8 @@ else:
         n2.load_checkpoint('./pretrained_models/othello/pytorch/', '8x8_100checkpoints_best.pth.tar')
     elif gameChoice == 1:
         n1.load_checkpoint('/Users/mettinger/github/alpha-zero-general/pretrained_models/tictactoe/keras/','best-25eps-25sim-10epch.pth.tar')
+    elif gameChoice == 2:
+        n1.load_checkpoint('''/Users/mettinger/Google Drive/models''','best.pth.tar')
     args2 = dotdict({'numMCTSSims': 50, 'cpuct': 1.0})
     mcts2 = MCTS(g, n2, args2)
     n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
@@ -83,6 +87,8 @@ if gameChoice == 0:
     display = OthelloGame.display
 elif gameChoice == 1:
     display = TicTacToeGame.display
+elif gameChoice == 2:
+    display = None
 
 arena = Arena.Arena(n1p, player2, g, display=display)
 

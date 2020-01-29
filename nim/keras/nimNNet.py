@@ -16,10 +16,14 @@ class nimNNet():
 
         # Neural Net
         self.input_boards = Input(shape=(self.board_y,))    # s: batch_size x board_x x board_y
+        
         output_1 = Dense(64, activation='relu')(self.input_boards)
         output_2 = Dense(64, activation='relu')(output_1)
-        self.pi = Dense(self.action_size, activation='softmax', name='pi')(output_2)   # batch_size x self.action_size
-        self.v = Dense(1, activation='tanh', name='v')(output_2)                    # batch_size x 1
+        output_3 = Dense(64,activation='relu')(output_2)
+        output_last = Dense(64,activation='relu')(output_3)
+
+        self.pi = Dense(self.action_size, activation='softmax', name='pi')(output_last)   # batch_size x self.action_size
+        self.v = Dense(1, activation='tanh', name='v')(output_last)                    # batch_size x 1
 
         self.model = Model(inputs=self.input_boards, outputs=[self.pi, self.v])
         self.model.compile(loss=['categorical_crossentropy','mean_squared_error'], optimizer=Adam(args.lr))
