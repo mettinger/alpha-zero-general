@@ -14,7 +14,13 @@ elif gameChoice == 2:
 from Coach import Coach
 from utils import *
 import numpy as np
+import sys
 
+if sys.platform == 'darwin':
+    checkpoint = './temp/'
+else:
+    checkpoint = '''/content/drive/My Drive/models/'''
+    
 args = dotdict({
     'numIters': 3,
     'numEps': 25,              # Number of complete self-play games to simulate during a new iteration.
@@ -25,7 +31,7 @@ args = dotdict({
     'arenaCompare': 40,         # Number of games to play during arena play to determine if new net will be accepted.
     'cpuct': 1,
 
-    'checkpoint': './temp/',
+    'checkpoint': checkpoint,
     'load_model': False,
     'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
