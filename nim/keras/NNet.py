@@ -6,6 +6,7 @@ import random
 import numpy as np
 import math
 import sys
+import datetime
 sys.path.append('..')
 from utils import *
 from NeuralNet import NeuralNet
