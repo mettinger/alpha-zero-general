@@ -37,10 +37,14 @@ class NNetWrapper(NeuralNet):
         target_pis = np.asarray(target_pis)
         target_vs = np.asarray(target_vs)
 
-        #target_pis = np.expand_dims(target_pis, 1)
-        #target_vs = np.expand_dims(target_vs, 1)
+        log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
-        self.nnet.model.fit(x = input_boards, y = [target_pis, target_vs], batch_size = args.batch_size, epochs = args.epochs)
+        self.nnet.model.fit(x = input_boards, 
+                            y = [target_pis, target_vs], 
+                            batch_size = args.batch_size, 
+                            epochs = args.epochs,  
+                            callbacks=[tensorboard_callback])
 
     def predict(self, board):
         """
