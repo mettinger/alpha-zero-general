@@ -15,6 +15,11 @@ import argparse
 from .nimNNet import nimNNet as onnet
 import torch
 
+if sys.platform == 'darwin':
+    log_dir = '''/Users/mettinger/Google Drive/tensorboardLogs/'''
+else:
+    log_dir = '''/content/drive/My Drive/tensorboardLogs/'''
+
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
