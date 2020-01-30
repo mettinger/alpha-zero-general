@@ -15,12 +15,6 @@ import argparse
 from .nimNNet import nimNNet as onnet
 import torch
 
-if sys.platform == 'darwin':
-    log_dir = '''/Users/mettinger/Google Drive/tensorboardLogs/'''
-else:
-    log_dir = '''/content/drive/My Drive/tensorboardLogs/'''
-
-
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
@@ -46,7 +40,11 @@ class NNetWrapper(NeuralNet):
         target_vs = np.asarray(target_vs)
 
         #log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        log_dir = '''/content/drive/My Drive/tensorboardLogs/'''
+        if sys.platform == 'darwin':
+            log_dir = '''/Users/mettinger/Google Drive/tensorboardLogs/'''
+        else:
+            log_dir = '''/content/drive/My Drive/tensorboardLogs/'''
+            
         tensorboard = TensorBoard(log_dir=log_dir)
 
         self.nnet.model.fit(x = input_boards, 
