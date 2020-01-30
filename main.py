@@ -22,8 +22,8 @@ else:
     checkpoint = '''/content/drive/My Drive/models/'''
     
 args = dotdict({
-    'numIters': 10,              # Number of self-play and model fit rounds.
-    'numEps': 100,               # Number of complete self-play games to simulate during a new iteration.
+    'numIters': 100,              # Number of self-play and model fit rounds.
+    'numEps': 300,               # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 15,        #
     'updateThreshold': 0.45,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
@@ -32,8 +32,8 @@ args = dotdict({
     'cpuct': 1,
 
     'checkpoint': checkpoint,
-    'load_model': False,
-    'load_folder_file': (checkpoint,'best.pth.tar'),
+    'load_model': True,
+    'load_folder_file': (checkpoint,'checkpoint.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
 })
