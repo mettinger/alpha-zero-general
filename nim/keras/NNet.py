@@ -45,7 +45,7 @@ class NNetWrapper(NeuralNet):
         target_vs = np.asarray(target_vs)
 
         #log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        tensorboard = TensorBoard(log_dir="logs")
+        tensorboard = TensorBoard(log_dir=log_dir)
 
         self.nnet.model.fit(x = input_boards, 
                             y = [target_pis, target_vs], 
