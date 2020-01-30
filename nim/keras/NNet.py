@@ -20,6 +20,7 @@ if sys.platform == 'darwin':
 else:
     log_dir = '''/content/drive/My Drive/tensorboardLogs/'''
 
+
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
@@ -45,6 +46,7 @@ class NNetWrapper(NeuralNet):
         target_vs = np.asarray(target_vs)
 
         #log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        log_dir = '''/content/drive/My Drive/tensorboardLogs/'''
         tensorboard = TensorBoard(log_dir=log_dir)
 
         self.nnet.model.fit(x = input_boards, 
