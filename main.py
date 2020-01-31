@@ -1,5 +1,5 @@
 
-gameChoice = 1
+gameChoice = 2
 
 if gameChoice == 0:
     from othello.OthelloGame import OthelloGame as Game
