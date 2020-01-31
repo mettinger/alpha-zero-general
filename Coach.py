@@ -116,10 +116,6 @@ class Coach():
             
             self.nnet.train(trainExamples)
 
-            # ALWAYS ACCEPT.  JUST KEEP TRAINING.
-            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
-            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar') 
-
             '''
             nmcts = MCTS(self.game, self.nnet, self.args)
 
@@ -137,6 +133,11 @@ class Coach():
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar')                
             '''
+
+            # ALWAYS ACCEPT.  JUST KEEP TRAINING.
+            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
+            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar') 
+            
 
     def getCheckpointFile(self, iteration):
         #return 'checkpoint_' + str(iteration) + '.pth.tar'
