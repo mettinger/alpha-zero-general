@@ -152,9 +152,7 @@ class nimGame(Game):
         if sum(board) > 0:
             return 0
         else:
-            #print("Winner: " + str(-player))
-            #return -1
-            return -player
+            return -1
 
     def getCanonicalForm(self, board, player):
         """
