@@ -1,5 +1,5 @@
 
-gameChoice = 2
+gameChoice = 1
 
 if gameChoice == 0:
     from othello.OthelloGame import OthelloGame as Game
@@ -32,7 +32,7 @@ args = dotdict({
     'cpuct': 1,
 
     'checkpoint': checkpoint,
-    'load_model': True,
+    'load_model': False,
     'load_folder_file': (checkpoint,'checkpoint.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
