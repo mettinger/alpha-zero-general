@@ -126,12 +126,16 @@ class nimGame(Game):
                         moves that are valid from the current board and player,
                         0 for invalid moves
         """
+
+        
         validMoves = np.zeros(self.getActionSize())
         for action in range(self.getActionSize()):
             pileSize, _ = actionDecode(action)
             if board[pileSize - 1] > 0:
                 validMoves[action] = 1
+        
 
+        #validMoves = np.ones(self.getActionSize())
         return validMoves
 
     def getGameEnded(self, board, player):
@@ -148,7 +152,9 @@ class nimGame(Game):
         if sum(board) > 0:
             return 0
         else:
-            return -1
+            #print("Winner: " + str(-player))
+            #return -1
+            return -player
 
     def getCanonicalForm(self, board, player):
         """

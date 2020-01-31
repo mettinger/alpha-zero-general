@@ -36,9 +36,13 @@ if gameChoice == 0:
 elif gameChoice == 1:
     g = TicTacToeGame()
 elif gameChoice == 2:
+
+    initialState = np.array([1 for i in range(10)])
+    #initialState = np.array([0,0,0,0,0,0,0,0,0,1])
+
     config = {'maxPileSize':10, 
               'maxNumPile':10, 
-              'initialState':np.array([1 for i in range(10)]),
+              'initialState': initialState,
               'randomInitial':False}
     g = nimGame(config)
 
