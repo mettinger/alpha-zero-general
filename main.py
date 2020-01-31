@@ -32,7 +32,7 @@ args = dotdict({
     'cpuct': 1,
 
     'checkpoint': checkpoint,
-    'load_model': False,
+    'load_model': True,
     'load_folder_file': (checkpoint,'checkpoint.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
