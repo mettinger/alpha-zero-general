@@ -13,6 +13,7 @@ elif gameChoice == 1:
     from tictactoe.keras.NNet import NNetWrapper as nn
 elif gameChoice == 2:
     from nim.nimGame import nimGame
+    from nim.nimPlayers import *
     from nim.keras.NNet import NNetWrapper as nn
 
 
@@ -35,16 +36,22 @@ if gameChoice == 0:
 elif gameChoice == 1:
     g = TicTacToeGame()
 elif gameChoice == 2:
-    g = nimGame()
+    config = {'maxPileSize':10, 
+              'maxNumPile':10, 
+              'initialState':np.array([1 for i in range(10)]),
+              'randomInitial':False}
+    g = nimGame(config)
 
 # all players
-rp = RandomPlayer(g).play
+#rp = RandomPlayer(g).play
 
 if gameChoice == 0:
     gp = GreedyOthelloPlayer(g).play
     hp = HumanOthelloPlayer(g).play
 elif gameChoice == 1:
     hp = HumanTicTacToePlayer(g).play
+elif gameChoice == 2:
+    hp = HumanNimPlayer(g).play
 
 
 # nnet players
@@ -88,7 +95,7 @@ if gameChoice == 0:
 elif gameChoice == 1:
     display = TicTacToeGame.display
 elif gameChoice == 2:
-    display = None
+    display = nimGame.display
 
 arena = Arena.Arena(n1p, player2, g, display=display)
 

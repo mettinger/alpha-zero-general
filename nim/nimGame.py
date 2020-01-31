@@ -21,6 +21,36 @@ def actionDecode(action):
 
     return pileSize, removeSize
 
+# CALCULATE THE NIMBER ASSOCIATED WITH A STATE
+def stateToNimber(pileList, shortNotation=True):
+    if shortNotation:
+        pileList = [i % 2 for i in pileList]
+        longList = []
+        for index, count in enumerate(pileList):
+            longList.extend([index + 1 for i in range(count)])
+        return stateToNimber(longList, False)
+    else:  
+        if len(pileList) == 0:
+            return 0
+        elif len(pileList) == 1:
+            return pileList[0]
+        elif len(pileList) == 2:
+            a = format(pileList[0], 'b')
+            b = format(pileList[1], 'b')
+            
+            if len(a) > len(b):
+                b = b.zfill(len(a))
+            else:
+                a = a.zfill(len(b))
+                
+            c = ''
+            for i in range(len(a)):
+                c = c + str((int(b[i]) + int(a[i])) % 2)
+            return int(c,2)
+                
+        else:
+            return stateToNimber([pileList[0], stateToNimber(pileList[1:], False)], False)
+
 class nimGame(Game):
     """
     This class specifies the base Game class. To define your own game, subclass
@@ -159,3 +189,9 @@ class nimGame(Game):
                          Required by MCTS for hashing.
         """
         return str(list(board))
+
+
+    @staticmethod
+    def display(board):
+        print("Board: " + str(board))
+        print("Nimber: " + str(stateToNimber(board)))
