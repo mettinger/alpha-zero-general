@@ -65,7 +65,15 @@ if __name__ == "__main__":
     if args.load_model:
         print("Load trainExamples from file")
         c.loadTrainExamples()
-    c.learn()
+  
+    #c.learn()
 
     # multiprocessing stuff here
-    pass
+    q_multi = multiprocessing.Queue()
+    q_multi.put(c.trainExamplesHistory)
+    process_selfPlay = Process(target=c.selfPlay, args=(q_multi,))
+    process_selfPlay.start()
+    while True:
+        trainExampleHistory = q_multi.get(block=True)
+        q_multi.put(trainExampleHistory, block=True)
+        c.trainNetwork(trainExampleHistory)

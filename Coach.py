@@ -6,6 +6,7 @@ from pytorch_classification.utils import Bar, AverageMeter
 import time, os, sys
 from pickle import Pickler, Unpickler
 from random import shuffle
+import copy
 
 
 class Coach():
@@ -61,7 +62,11 @@ class Coach():
             if r!=0:
                 return [(x[0],x[2],r*((-1)**(x[1]!=self.curPlayer))) for x in trainExamples]
 
-    def selfPlay(self):
+    def selfPlay(self, q_multi):
+
+        trainExampleHistory = q_multi.get(True)
+        q.put(trainExampleHistory, True)
+
         iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
 
         eps_time = AverageMeter()
@@ -81,19 +86,24 @@ class Coach():
         bar.finish()
 
         # save the iteration examples to the history 
-        self.trainExamplesHistory.append(iterationTrainExamples)
+        trainExamplesHistory.append(iterationTrainExamples)
             
         if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
             print("len(trainExamplesHistory) =", len(self.trainExamplesHistory), " => remove the oldest trainExamples")
             self.trainExamplesHistory.pop(0)
         # backup history to a file
-        # NB! the examples were collected using the model from the previous iteration, so (i-1)  
+        # NB! the examples were collected using the model from the previous iteration, so (i-1) 
+
+        self.trainExamplesHistory = copy.deepcopy(trainExampleHistory)
         self.saveTrainExamples()
 
-    def trainNetwork(self):
+        q_multi.get(True)
+        q.put(trainExampleHistory, True)
+
+    def trainNetwork(self, trainExampleHistory):
         # shuffle examples before training
         trainExamples = []
-        for e in self.trainExamplesHistory:
+        for e in trainExamplesHistory:
             trainExamples.extend(e)
         shuffle(trainExamples)
         
