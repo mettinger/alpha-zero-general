@@ -148,6 +148,7 @@ class Coach():
                 self.trainExamplesHistory.pop(0)
             # backup history to a file
             # NB! the examples were collected using the model from the previous iteration, so (i-1)  
+
             self.saveTrainExamples(i-1)
             
             # shuffle examples before training
@@ -187,10 +188,8 @@ class Coach():
             
 
     def getCheckpointFile(self, iteration):
-        if iteration:
-            return 'checkpoint_' + str(iteration) + '.pth.tar'
-        else:
-            return 'checkpoint.pth.tar'
+        #return 'checkpoint_' + str(iteration) + '.pth.tar'
+        return 'checkpoint.pth.tar'
 
     def saveTrainExamples(self, iteration=None):
         folder = self.args.checkpoint

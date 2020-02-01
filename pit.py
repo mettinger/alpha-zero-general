@@ -38,7 +38,7 @@ elif gameChoice == 1:
 elif gameChoice == 2:
 
     initialState = np.array([1 for i in range(10)])
-    #initialState = np.array([0,0,0,0,0,0,0,0,0,1])
+    #initialState = np.array([1,1,1,1,1,0,0,0,0,0])
 
     config = {'maxPileSize':10, 
               'maxNumPile':10, 

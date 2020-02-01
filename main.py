@@ -18,13 +18,13 @@ import sys
 import multiprocessing
 
 if sys.platform == 'darwin':
-    checkpoint = '''/Users/mettinger/Google Drive/models/temp/'''
+    checkpoint = '''/Users/mettinger/Google Drive/models/'''
 else:
     checkpoint = '''/content/drive/My Drive/models/'''
     
 args = dotdict({
     'numIters': 100,              # Number of self-play and model fit rounds.
-    'numEps': 200,               # Number of complete self-play games to simulate during a new iteration.
+    'numEps': 300,               # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 15,        #
     'updateThreshold': 0.45,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
