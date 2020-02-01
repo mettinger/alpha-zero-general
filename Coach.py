@@ -62,31 +62,33 @@ class Coach():
             if r!=0:
                 return [(x[0],x[2],r*((-1)**(x[1]!=self.curPlayer))) for x in trainExamples]
 
-    def selfPlay(self, q_multi):
-
-        trainExampleHistory = q_multi.get(True)
-        q.put(trainExampleHistory, True)
+    def selfPlay(self):
 
         iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
 
+        '''
         eps_time = AverageMeter()
         bar = Bar('Self Play', max=self.args.numEps)
         end = time.time()
+        '''
 
         for eps in range(self.args.numEps):
+            print("self play game: " + str(eps))
             self.mcts = MCTS(self.game, self.nnet, self.args)   # reset search tree
             iterationTrainExamples += self.executeEpisode()
 
+            '''
             # bookkeeping + plot progress
             eps_time.update(time.time() - end)
             end = time.time()
             bar.suffix  = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps+1, maxeps=self.args.numEps, et=eps_time.avg,
                                                                                                         total=bar.elapsed_td, eta=bar.eta_td)
             bar.next()
-        bar.finish()
+            '''
+        #bar.finish()
 
         # save the iteration examples to the history 
-        trainExamplesHistory.append(iterationTrainExamples)
+        self.trainExamplesHistory.append(iterationTrainExamples)
             
         if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
             print("len(trainExamplesHistory) =", len(self.trainExamplesHistory), " => remove the oldest trainExamples")
@@ -94,16 +96,12 @@ class Coach():
         # backup history to a file
         # NB! the examples were collected using the model from the previous iteration, so (i-1) 
 
-        self.trainExamplesHistory = copy.deepcopy(trainExampleHistory)
         self.saveTrainExamples()
-
-        q_multi.get(True)
-        q.put(trainExampleHistory, True)
 
     def trainNetwork(self, trainExampleHistory):
         # shuffle examples before training
         trainExamples = []
-        for e in trainExamplesHistory:
+        for e in trainExampleHistory:
             trainExamples.extend(e)
         shuffle(trainExamples)
         

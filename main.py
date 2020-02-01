@@ -16,6 +16,8 @@ from utils import *
 import numpy as np
 import sys
 import multiprocessing
+import time
+import copy
 
 if sys.platform == 'darwin':
     checkpoint = '''/Users/mettinger/Google Drive/models/'''
@@ -66,14 +68,28 @@ if __name__ == "__main__":
         print("Load trainExamples from file")
         c.loadTrainExamples()
   
-    #c.learn()
+    c.learn()
+
+    '''
+    def updateCoach(q_multi):
+        coach = q_multi.get(block=True)
+        q_multi.put(coach, block=True)
+
+        coach.selfPlay()
+
+        old_coach = q_multi.get(block=True)
+        q_multi.put(coach, block=True)
+        
+
 
     # multiprocessing stuff here
     q_multi = multiprocessing.Queue()
-    q_multi.put(c.trainExamplesHistory)
-    process_selfPlay = Process(target=c.selfPlay, args=(q_multi,))
+    q_multi.put(c)
+    process_selfPlay = multiprocessing.Process(target=updateCoach, args=(q_multi,))
     process_selfPlay.start()
     while True:
-        trainExampleHistory = q_multi.get(block=True)
-        q_multi.put(trainExampleHistory, block=True)
-        c.trainNetwork(trainExampleHistory)
+        coach = q_multi.get(block=True)
+        q_multi.put(coach, block=True)
+        #coach.trainNetwork()
+        s = input("Wait: ")
+    '''

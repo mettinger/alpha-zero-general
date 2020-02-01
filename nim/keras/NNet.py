@@ -76,7 +76,7 @@ class NNetWrapper(NeuralNet):
             print("Checkpoint Directory does not exist! Making directory {}".format(folder))
             os.mkdir(folder)
         else:
-            print("Checkpoint Directory exists! ")
+            print("Saving: " + filepath)
     
         self.nnet.model.save_weights(filepath)
 
