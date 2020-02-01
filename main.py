@@ -15,15 +15,16 @@ from Coach import Coach
 from utils import *
 import numpy as np
 import sys
+import multiprocessing
 
 if sys.platform == 'darwin':
-    checkpoint = '''/Users/mettinger/Google Drive/models/'''
+    checkpoint = '''/Users/mettinger/Google Drive/models/temp/'''
 else:
     checkpoint = '''/content/drive/My Drive/models/'''
     
 args = dotdict({
     'numIters': 100,              # Number of self-play and model fit rounds.
-    'numEps': 300,               # Number of complete self-play games to simulate during a new iteration.
+    'numEps': 2,               # Number of complete self-play games to simulate during a new iteration.
     'tempThreshold': 15,        #
     'updateThreshold': 0.45,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
@@ -32,7 +33,7 @@ args = dotdict({
     'cpuct': 1,
 
     'checkpoint': checkpoint,
-    'load_model': False,
+    'load_model': True,
     'load_folder_file': (checkpoint,'checkpoint.pth.tar'),
     'numItersForTrainExamplesHistory': 20,
 
@@ -64,4 +65,7 @@ if __name__ == "__main__":
     if args.load_model:
         print("Load trainExamples from file")
         c.loadTrainExamples()
-    c.learn()
+    c.learn2()
+
+    # multiprocessing stuff here
+    pass

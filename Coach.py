@@ -61,6 +61,53 @@ class Coach():
             if r!=0:
                 return [(x[0],x[2],r*((-1)**(x[1]!=self.curPlayer))) for x in trainExamples]
 
+    def selfPlay(self):
+        iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
+
+        eps_time = AverageMeter()
+        bar = Bar('Self Play', max=self.args.numEps)
+        end = time.time()
+
+        for eps in range(self.args.numEps):
+            self.mcts = MCTS(self.game, self.nnet, self.args)   # reset search tree
+            iterationTrainExamples += self.executeEpisode()
+
+            # bookkeeping + plot progress
+            eps_time.update(time.time() - end)
+            end = time.time()
+            bar.suffix  = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps+1, maxeps=self.args.numEps, et=eps_time.avg,
+                                                                                                        total=bar.elapsed_td, eta=bar.eta_td)
+            bar.next()
+        bar.finish()
+
+        # save the iteration examples to the history 
+        self.trainExamplesHistory.append(iterationTrainExamples)
+            
+        if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
+            print("len(trainExamplesHistory) =", len(self.trainExamplesHistory), " => remove the oldest trainExamples")
+            self.trainExamplesHistory.pop(0)
+        # backup history to a file
+        # NB! the examples were collected using the model from the previous iteration, so (i-1)  
+        self.saveTrainExamples()
+
+    def trainNetwork(self):
+        # shuffle examples before training
+        trainExamples = []
+        for e in self.trainExamplesHistory:
+            trainExamples.extend(e)
+        shuffle(trainExamples)
+        
+        self.nnet.train(trainExamples)
+
+        # ALWAYS ACCEPT.  JUST KEEP TRAINING.
+        self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(None))
+        self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar') 
+
+    def learn2(self):
+        for i in range(1, self.args.numIters+1):
+            self.selfPlay()
+            self.trainNetwork()
+
     def learn(self):
         """
         Performs numIters iterations with numEps episodes of self-play in each
@@ -110,13 +157,13 @@ class Coach():
             shuffle(trainExamples)
 
             # training new network, keeping a copy of the old one
-            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
-            self.pnet.load_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
-            pmcts = MCTS(self.game, self.pnet, self.args)
+            #self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
+            #self.pnet.load_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
             
             self.nnet.train(trainExamples)
 
             '''
+            pmcts = MCTS(self.game, self.pnet, self.args)
             nmcts = MCTS(self.game, self.nnet, self.args)
 
             print('PITTING AGAINST PREVIOUS VERSION')
@@ -140,10 +187,12 @@ class Coach():
             
 
     def getCheckpointFile(self, iteration):
-        #return 'checkpoint_' + str(iteration) + '.pth.tar'
-        return 'checkpoint.pth.tar'
+        if iteration:
+            return 'checkpoint_' + str(iteration) + '.pth.tar'
+        else:
+            return 'checkpoint.pth.tar'
 
-    def saveTrainExamples(self, iteration):
+    def saveTrainExamples(self, iteration=None):
         folder = self.args.checkpoint
         if not os.path.exists(folder):
             os.makedirs(folder)
