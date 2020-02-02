@@ -16,7 +16,7 @@ class HumanNimPlayer():
         
         while True: 
             # Python 3.x
-            a = input()
+            a = input("Enter your move: ")
             # Python 2.x 
             # a = raw_input()
 

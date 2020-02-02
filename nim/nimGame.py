@@ -199,3 +199,8 @@ class nimGame(Game):
     def display(board):
         print("Board: " + str(board))
         print("Nimber: " + str(stateToNimber(board)))
+        print(" ")
+
+    @staticmethod
+    def postAction(action):
+        print("Action: " + str(actionDecode(action)))

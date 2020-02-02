@@ -38,7 +38,7 @@ elif gameChoice == 1:
 elif gameChoice == 2:
 
     initialState = np.array([1 for i in range(10)])
-    #initialState = np.array([1,1,1,1,1,0,0,0,0,0])
+    #initialState = np.array([1,30,0,0,0,0,0,0,0,0])
 
     config = {'maxPileSize':10, 
               'maxNumPile':10, 
@@ -96,11 +96,14 @@ else:
 
 if gameChoice == 0:
     display = OthelloGame.display
+    postAction = None
 elif gameChoice == 1:
     display = TicTacToeGame.display
+    postAction = None
 elif gameChoice == 2:
     display = nimGame.display
+    postAction = nimGame.postAction
 
-arena = Arena.Arena(n1p, player2, g, display=display)
+arena = Arena.Arena(n1p, player2, g, display=display, postAction=postAction)
 
 print(arena.playGames(2, verbose=True))
