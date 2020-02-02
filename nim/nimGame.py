@@ -66,7 +66,7 @@ class nimGame(Game):
         self.maxPileSize = config['maxPileSize']
         self.maxNumPile = config['maxNumPile']
         self.initialState = config['initialState']
-        self.randomInitial = config['randomInitial']
+        #self.randomInitial = config['randomInitial']
         self.numAction = sumIntegers(self.maxPileSize)
         self.state = copy.deepcopy(self.initialState)
 

@@ -27,10 +27,10 @@ else:
 args = dotdict({
     'numIters': 100,              # Number of self-play and model fit rounds.
     'numEps': 300,               # Number of complete self-play games to simulate during a new iteration.
+    'numMCTSSims': 100,          # Number of games moves for MCTS to simulate.
     'tempThreshold': 15,        #
     'updateThreshold': 0.45,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
-    'numMCTSSims': 100,          # Number of games moves for MCTS to simulate.
     'arenaCompare': 50,         # Number of games to play during arena play to determine if new net will be accepted.
     'cpuct': 1,
 
@@ -49,12 +49,12 @@ if __name__ == "__main__":
         g = TicTacToeGame()
     elif gameChoice == 2:
 
-        initialState = np.array([1 for i in range(10)])
+        #initialState = np.array([1 for i in range(10)])
+        initialState = None
 
         config = {'maxPileSize':10, 
-                  'maxNumPile':10, 
-                  'initialState': initialState, 
-                  'randomInitial':False}
+                  'maxNumPile':3, 
+                  'initialState': initialState}
 
         g = nimGame(config)
 
