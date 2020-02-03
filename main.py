@@ -1,5 +1,6 @@
 
 gameChoice = 2
+serialFlag = False
 
 if gameChoice == 0:
     from othello.OthelloGame import OthelloGame as Game
@@ -20,7 +21,8 @@ import time
 import copy
 
 if sys.platform == 'darwin':
-    checkpoint = '''/Users/mettinger/Google Drive/models/'''
+    #checkpoint = '''/Users/mettinger/Google Drive/models/'''
+    checkpoint = '''/Users/mettinger/Desktop/old/'''
 else:
     checkpoint = '''/content/drive/My Drive/models/'''
     
@@ -43,54 +45,63 @@ args = dotdict({
 
 if __name__ == "__main__":
 
-    if gameChoice == 0:
-        g = Game(6)
-    elif gameChoice == 1:
-        g = TicTacToeGame()
-    elif gameChoice == 2:
+    print("Serial Flag: " + str(serialFlag))
+    if serialFlag:
+        if gameChoice == 0:
+            g = Game(6)
+        elif gameChoice == 1:
+            g = TicTacToeGame()
+        elif gameChoice == 2:
 
-        #initialState = np.array([1 for i in range(10)])
+            #initialState = np.array([1 for i in range(10)])
+            initialState = None  # None provides random board initial state
+
+            config = {'maxPileSize':10, 
+                    'maxNumPile':3, 
+                    'initialState': initialState}
+
+            g = nimGame(config)
+
+        nnet = nn(g)
+
+        if args.load_model:
+            nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
+
+        c = Coach(g, nnet, args)
+        if args.load_model:
+            print("Load trainExamples from file")
+            c.loadTrainExamples()
+    
+        c.learn()
+
+    else:
+        def selfPlayOnly(args):
+            initialState = None
+            config = {'maxPileSize':10, 
+                    'maxNumPile':3, 
+                    'initialState': initialState}
+            g = nimGame(config)
+            nnet = nn(g)
+            coach_0 = Coach(g, nnet, args)
+            for i in range(args.numIters):
+                print("Self-play iteration: " + str(i))
+                nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
+                coach_0.selfPlay()
+
+            
+        process_selfPlay = multiprocessing.Process(target=selfPlayOnly, args=(args,))
+        process_selfPlay.start()
+
         initialState = None
-
         config = {'maxPileSize':10, 
-                  'maxNumPile':3, 
-                  'initialState': initialState}
-
+                'maxNumPile':3, 
+                'initialState': initialState}
         g = nimGame(config)
-
-    nnet = nn(g)
-
-    if args.load_model:
+        nnet = nn(g)
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
-
-    c = Coach(g, nnet, args)
-    if args.load_model:
-        print("Load trainExamples from file")
-        c.loadTrainExamples()
-  
-    c.learn()
-
-    '''
-    def updateCoach(q_multi):
-        coach = q_multi.get(block=True)
-        q_multi.put(coach, block=True)
-
-        coach.selfPlay()
-
-        old_coach = q_multi.get(block=True)
-        q_multi.put(coach, block=True)
-        
-
-
-    # multiprocessing stuff here
-    q_multi = multiprocessing.Queue()
-    q_multi.put(c)
-    process_selfPlay = multiprocessing.Process(target=updateCoach, args=(q_multi,))
-    process_selfPlay.start()
-    while True:
-        coach = q_multi.get(block=True)
-        q_multi.put(coach, block=True)
-        #coach.trainNetwork()
-        s = input("Wait: ")
-
-    '''
+        coach_1 = Coach(g, nnet, args)
+        for j in range(args.numIters):
+            print("Train iteration: " + str(j))
+            coach_1.loadTrainExamples()
+            coach_1.trainNetwork()
+            

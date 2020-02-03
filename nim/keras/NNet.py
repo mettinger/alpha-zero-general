@@ -14,6 +14,8 @@ from NeuralNet import NeuralNet
 import argparse
 from .nimNNet import nimNNet as onnet
 import torch
+from filelock import FileLock
+
 
 args = dotdict({
     'lr': 0.001,
@@ -30,7 +32,7 @@ class NNetWrapper(NeuralNet):
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
 
-    def train(self, examples):
+    def train(self, examples, verbose=1):
         """
         examples: list of examples, each example is of form (board, pi, v)
         """
@@ -51,7 +53,8 @@ class NNetWrapper(NeuralNet):
                             y = [target_pis, target_vs], 
                             batch_size = args.batch_size, 
                             epochs = args.epochs,  
-                            callbacks=[tensorboard])
+                            callbacks=[tensorboard], 
+                            verbose=verbose)
 
     def predict(self, board):
         """
@@ -75,14 +78,18 @@ class NNetWrapper(NeuralNet):
         if not os.path.exists(folder):
             print("Checkpoint Directory does not exist! Making directory {}".format(folder))
             os.mkdir(folder)
-        else:
-            print("Saving: " + filepath)
     
-        self.nnet.model.save_weights(filepath)
+        print("Saving: " + filepath)
+        lock = FileLock(filepath + ".lock")
+        with lock:
+            self.nnet.model.save_weights(filepath)
 
     def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
         # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
             raise("No model in path '{}'".format(filepath))
-        self.nnet.model.load_weights(filepath)
+
+        lock = FileLock(filepath + ".lock")
+        with lock:
+            self.nnet.model.load_weights(filepath)

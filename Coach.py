@@ -7,6 +7,7 @@ import time, os, sys
 from pickle import Pickler, Unpickler
 from random import shuffle
 import copy
+from filelock import FileLock
 
 
 class Coach():
@@ -66,26 +67,10 @@ class Coach():
 
         iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
 
-        '''
-        eps_time = AverageMeter()
-        bar = Bar('Self Play', max=self.args.numEps)
-        end = time.time()
-        '''
-
         for eps in range(self.args.numEps):
-            print("self play game: " + str(eps))
+            print("\nself play game: " + str(eps))
             self.mcts = MCTS(self.game, self.nnet, self.args)   # reset search tree
             iterationTrainExamples += self.executeEpisode()
-
-            '''
-            # bookkeeping + plot progress
-            eps_time.update(time.time() - end)
-            end = time.time()
-            bar.suffix  = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps+1, maxeps=self.args.numEps, et=eps_time.avg,
-                                                                                                        total=bar.elapsed_td, eta=bar.eta_td)
-            bar.next()
-            '''
-        #bar.finish()
 
         # save the iteration examples to the history 
         self.trainExamplesHistory.append(iterationTrainExamples)
@@ -98,15 +83,14 @@ class Coach():
 
         self.saveTrainExamples()
 
-    def trainNetwork(self, trainExampleHistory):
+    def trainNetwork(self):
         # shuffle examples before training
         trainExamples = []
-        for e in trainExampleHistory:
+        for e in self.trainExamplesHistory:
             trainExamples.extend(e)
         shuffle(trainExamples)
         
-        self.nnet.train(trainExamples)
-
+        self.nnet.train(trainExamples, verbose=1)
         # ALWAYS ACCEPT.  JUST KEEP TRAINING.
         self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(None))
         self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar') 
@@ -204,9 +188,12 @@ class Coach():
         if not os.path.exists(folder):
             os.makedirs(folder)
         filename = os.path.join(folder, self.getCheckpointFile(iteration)+".examples")
-        with open(filename, "wb+") as f:
-            Pickler(f).dump(self.trainExamplesHistory)
-        f.closed
+
+        lock = FileLock(filename + ".lock")
+        with lock:
+            with open(filename, "wb+") as f:
+                Pickler(f).dump(self.trainExamplesHistory)
+            f.closed
 
     def loadTrainExamples(self):
         modelFile = os.path.join(self.args.load_folder_file[0], self.args.load_folder_file[1])
@@ -218,8 +205,10 @@ class Coach():
                 sys.exit()
         else:
             print("File with trainExamples found. Read it.")
-            with open(examplesFile, "rb") as f:
-                self.trainExamplesHistory = Unpickler(f).load()
-            f.closed
+            lock = FileLock(examplesFile + ".lock")
+            with lock:
+                with open(examplesFile, "rb") as f:
+                    self.trainExamplesHistory = Unpickler(f).load()
+                f.closed
             # examples based on the model were already collected (loaded)
             self.skipFirstSelfPlay = True
