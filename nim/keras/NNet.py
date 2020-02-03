@@ -24,6 +24,7 @@ args = dotdict({
     'batch_size': 128,
     'cuda': torch.cuda.is_available(),
     'num_channels': 512,
+    'tensorboardFlag': False
 })
 
 class NNetWrapper(NeuralNet):
@@ -47,20 +48,21 @@ class NNetWrapper(NeuralNet):
         else:
             log_dir = '''/content/drive/My Drive/tensorboardLogs/'''
             
-        '''
-        tensorboard = TensorBoard(log_dir=log_dir)
-        self.nnet.model.fit(x = input_boards, 
-                            y = [target_pis, target_vs], 
-                            batch_size = args.batch_size, 
-                            epochs = args.epochs,  
-                            callbacks=[tensorboard], 
-                            verbose=verbose)
-        '''
-        self.nnet.model.fit(x = input_boards, 
-                            y = [target_pis, target_vs], 
-                            batch_size = args.batch_size, 
-                            epochs = args.epochs, 
-                            verbose=verbose)
+        if args.tensorboardFlag:
+            tensorboard = TensorBoard(log_dir=log_dir)
+            self.nnet.model.fit(x = input_boards, 
+                                y = [target_pis, target_vs], 
+                                batch_size = args.batch_size, 
+                                epochs = args.epochs,  
+                                callbacks=[tensorboard], 
+                                verbose=verbose)
+        
+        else:
+            self.nnet.model.fit(x = input_boards, 
+                                y = [target_pis, target_vs], 
+                                batch_size = args.batch_size, 
+                                epochs = args.epochs, 
+                                verbose=verbose)
 
     def predict(self, board):
         """
