@@ -22,7 +22,7 @@ import copy
 
 if sys.platform == 'darwin':
     #checkpoint = '''/Users/mettinger/Google Drive/models/'''
-    checkpoint = '''/Users/mettinger/Desktop/old/'''
+    checkpoint = '''/Users/mettinger/Desktop/gameTemp/'''
 else:
     checkpoint = '''/content/drive/My Drive/models/'''
     
