@@ -1,6 +1,6 @@
 
 gameChoice = 2
-serialFlag = False
+serialFlag = True
 
 if gameChoice == 0:
     from othello.OthelloGame import OthelloGame as Game
