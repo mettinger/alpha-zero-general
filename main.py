@@ -28,8 +28,8 @@ else:
     
 args = dotdict({
     'numIters': 100,              # Number of self-play and model fit rounds.
-    'numEps': 300,               # Number of complete self-play games to simulate during a new iteration.
-    'numMCTSSims': 100,          # Number of games moves for MCTS to simulate.
+    'numEps': 200,               # Number of complete self-play games to simulate during a new iteration.
+    'numMCTSSims': 200,          # Number of games moves for MCTS to simulate.
     'tempThreshold': 15,        #
     'updateThreshold': 0.45,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         def selfPlayOnly(args):
             initialState = None
             config = {'maxPileSize':10, 
-                    'maxNumPile':3, 
+                    'maxNumPile':5, 
                     'initialState': initialState}
             g = nimGame(config)
             nnet = nn(g)
