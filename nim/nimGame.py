@@ -107,13 +107,18 @@ class nimGame(Game):
             nextPlayer: player who plays in the next turn (should be -player)
         """
         pileSize, removeSize = actionDecode(action)
-        nextBoard = copy.copy(board)
-        nextBoard[pileSize - 1] = nextBoard[pileSize - 1] - 1
-        if removeSize < pileSize:
-            newPileSize = pileSize - removeSize
-            nextBoard[newPileSize - 1] = nextBoard[newPileSize - 1] + 1
-        
-        return nextBoard, -player
+
+        # if we don't use getValidMoves
+        if board[pileSize - 1] == 0:
+            return None, -player
+        else:
+            nextBoard = copy.copy(board)
+            nextBoard[pileSize - 1] = nextBoard[pileSize - 1] - 1
+            if removeSize < pileSize:
+                newPileSize = pileSize - removeSize
+                nextBoard[newPileSize - 1] = nextBoard[newPileSize - 1] + 1
+            
+            return nextBoard, -player
 
     def getValidMoves(self, board, player):
         """
@@ -127,15 +132,16 @@ class nimGame(Game):
                         0 for invalid moves
         """
 
-        
+
+        '''
         validMoves = np.zeros(self.getActionSize())
         for action in range(self.getActionSize()):
             pileSize, _ = actionDecode(action)
             if board[pileSize - 1] > 0:
                 validMoves[action] = 1
-        
+        '''
 
-        #validMoves = np.ones(self.getActionSize())
+        validMoves = np.ones(self.getActionSize())
         return validMoves
 
     def getGameEnded(self, board, player):
@@ -149,10 +155,15 @@ class nimGame(Game):
                small non-zero value for draw.
                
         """
-        if sum(board) > 0:
-            return 0
+        
+        if board==None:
+            # we made an illegal move
+            return 1
         else:
-            return -1
+            if sum(board) > 0:
+                return 0
+            else:
+                return -1
 
     def getCanonicalForm(self, board, player):
         """
