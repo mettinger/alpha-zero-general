@@ -43,6 +43,10 @@ args = dotdict({
 
 })
 
+nimConfig = {'maxPileSize':10, 
+             'maxNumPile':5, 
+             'initialState': initialState}
+
 if __name__ == "__main__":
 
     print("Serial Flag: " + str(serialFlag))
@@ -56,11 +60,7 @@ if __name__ == "__main__":
             #initialState = np.array([1 for i in range(10)])
             initialState = None  # None provides random board initial state
 
-            config = {'maxPileSize':10, 
-                    'maxNumPile':3, 
-                    'initialState': initialState}
-
-            g = nimGame(config)
+            g = nimGame(nimConfig)
 
         nnet = nn(g)
 
@@ -77,9 +77,6 @@ if __name__ == "__main__":
     else:
         def selfPlayOnly(args):
             initialState = None
-            config = {'maxPileSize':10, 
-                    'maxNumPile':5, 
-                    'initialState': initialState}
             g = nimGame(config)
             nnet = nn(g)
             coach_0 = Coach(g, nnet, args)
@@ -93,10 +90,7 @@ if __name__ == "__main__":
         process_selfPlay.start()
 
         initialState = None
-        config = {'maxPileSize':10, 
-                'maxNumPile':3, 
-                'initialState': initialState}
-        g = nimGame(config)
+        g = nimGame(nimConfig)
         nnet = nn(g)
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
         coach_1 = Coach(g, nnet, args)
