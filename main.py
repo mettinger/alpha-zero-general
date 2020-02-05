@@ -44,7 +44,7 @@ args = dotdict({
 })
 
 nimConfig = {'maxPileSize':10, 
-             'maxNumPile':5, 
+             'maxNumPile':3, 
              'initialState': None}
 
 if __name__ == "__main__":
