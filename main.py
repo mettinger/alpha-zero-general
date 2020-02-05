@@ -45,7 +45,7 @@ args = dotdict({
 
 nimConfig = {'maxPileSize':10, 
              'maxNumPile':5, 
-             'initialState': initialState}
+             'initialState': None}
 
 if __name__ == "__main__":
 
@@ -56,9 +56,6 @@ if __name__ == "__main__":
         elif gameChoice == 1:
             g = TicTacToeGame()
         elif gameChoice == 2:
-
-            #initialState = np.array([1 for i in range(10)])
-            initialState = None  # None provides random board initial state
 
             g = nimGame(nimConfig)
 
@@ -75,8 +72,7 @@ if __name__ == "__main__":
         c.learn()
 
     else:
-        def selfPlayOnly(args):
-            initialState = None
+        def selfPlayOnly(args)""
             g = nimGame(config)
             nnet = nn(g)
             coach_0 = Coach(g, nnet, args)
@@ -89,7 +85,6 @@ if __name__ == "__main__":
         process_selfPlay = multiprocessing.Process(target=selfPlayOnly, args=(args,))
         process_selfPlay.start()
 
-        initialState = None
         g = nimGame(nimConfig)
         nnet = nn(g)
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
