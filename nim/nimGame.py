@@ -141,6 +141,7 @@ class nimGame(Game):
                 validMoves[action] = 1
         '''
 
+        # all moves are apriori valid.  let the algorithm find the invalid moves.
         validMoves = np.ones(self.getActionSize())
         return validMoves
 
