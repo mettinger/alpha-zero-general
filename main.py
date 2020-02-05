@@ -72,7 +72,7 @@ if __name__ == "__main__":
         c.learn()
 
     else:
-        def selfPlayOnly(args)
+        def selfPlayOnly(args):
             g = nimGame(config)
             nnet = nn(g)
             coach_0 = Coach(g, nnet, args)
