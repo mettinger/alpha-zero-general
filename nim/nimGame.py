@@ -110,7 +110,7 @@ class nimGame(Game):
 
         # if we don't use getValidMoves
         if board[pileSize - 1] == 0:
-            return None, -player
+            return np.array([-1]), -player
         else:
             nextBoard = copy.copy(board)
             nextBoard[pileSize - 1] = nextBoard[pileSize - 1] - 1
@@ -156,7 +156,7 @@ class nimGame(Game):
                
         """
         
-        if board==None:
+        if board[0]==-1:
             # we made an illegal move
             return 1
         else:
